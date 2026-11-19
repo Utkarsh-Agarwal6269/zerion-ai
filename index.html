@@ -443,12 +443,12 @@
       </div>
       <div class="playground-grid">
         <article class="api-card">
-          <code><span>ZerionAI</span>.ask(<b>'What are your timings?'</b>)</code>
-          <button class="run-btn" type="button" data-api="timings">Run API</button>
+          <code><span>ZerionAI</span>.ask(<b>'How do I embed Zerion AI?'</b>)</code>
+          <button class="run-btn" type="button" data-api="embed">Run API</button>
         </article>
         <article class="api-card">
-          <code><span>ZerionAI</span>.ask(<b>'Calculate 50000 salary'</b>)</code>
-          <button class="run-btn" type="button" data-api="salary">Run API</button>
+          <code><span>ZerionAI</span>.ask(<b>'Analyze: Zero dependency AI engine'</b>)</code>
+          <button class="run-btn" type="button" data-api="analyze">Run API</button>
         </article>
         <article class="api-card">
           <code><span>ZerionAI</span>.toggle()</code>
@@ -476,10 +476,10 @@
 
       ZerionAI.init({
         botName: "Zerion AI",
-        subtitle: "Instant Assistant",
-        welcomeMessage: "Hi! I’m Zerion AI. Ask me about timings or try a salary calculation.",
-        whatsappNumber: "919999999999",
-        quickReplies: ["What are your timings?", "Calculate 50000 salary", "Talk to sales"],
+        subtitle: "Engine & API Assistant",
+        welcomeMessage: "Welcome to Zerion AI! Ask me how the engine works, how to embed it in 2 lines of code, or test a live API command below.",
+        whatsappNumber: "",
+        quickReplies: ["How do I embed Zerion AI?", "What makes it unique?", "Test live word counter", "View API methods"],
         theme: {
           headerBg: "#090D16",
           primaryColor: "#4F46E5",
@@ -487,47 +487,48 @@
         },
         knowledgeBase: [
           {
-            keywords: ["timings", "timing", "hours", "open", "kahan", "kab"],
-            answer: "Our support hours are **Monday–Friday, 9 AM–6 PM IST**. I’m available 24/7 here for quick questions.",
-            ctaText: "Contact on WhatsApp",
-            ctaMessage: "Hello! I would like to know more about Zerion AI.",
-            ctaWhatsapp: true
+            keywords: ["embed", "install", "integrate", "setup", "script", "how", "use"],
+            answer: "Embedding **Zerion AI** takes 2 steps:\n1. Load `<script src=\"https://utkarsh-agarwal6269.github.io/zerion-ai/zerion.js\"><\/script>`\n2. Call `ZerionAI.init({ botName, knowledgeBase })` with your client's data."
           },
           {
-            keywords: ["pricing", "price", "cost", "plan", "free"],
-            answer: "Zerion AI is lightweight and easy to embed. Pricing depends on your integration scale and support needs.",
-            ctaText: "Request a quote",
-            ctaMessage: "Hello! I would like Zerion AI pricing details.",
-            ctaWhatsapp: true
+            keywords: ["unique", "features", "why", "shadow", "dom", "nlp", "hinglish", "zero"],
+            answer: "**Zerion AI** is built with **Shadow DOM isolation** (zero CSS clashes), **Hinglish + fuzzy Levenshtein NLP**, **live in-chat tools**, **auto page scanning**, and **zero external API keys**."
           },
           {
-            keywords: ["contact", "sales", "demo", "whatsapp", "phone"],
-            answer: "Ready to add Zerion AI to your product? Reach our team on WhatsApp.",
-            ctaText: "Chat with sales",
-            ctaMessage: "Hello! I would like a Zerion AI demo.",
-            ctaWhatsapp: true
+            keywords: ["api", "methods", "open", "close", "ask", "tool", "register", "knowledge"],
+            answer: "Public API methods on `window.ZerionAI`:\n• `ZerionAI.init(config)`\n• `ZerionAI.ask(prompt)`\n• `ZerionAI.open()` / `.close()` / `.toggle()`\n• `ZerionAI.registerTool(name, regex, fn)`\n• `ZerionAI.addKnowledge(items)`"
+          },
+          {
+            keywords: ["client", "custom", "theme", "color", "brand", "reuse", "multi"],
+            answer: "One `zerion.js` script powers unlimited websites—each site passes its own `theme`, `botName`, `whatsappNumber`, and `knowledgeBase` inside `ZerionAI.init()`."
           }
         ],
         autoScanPage: true
       });
 
       ZerionAI.registerTool(
-        "salary-calculator",
-        /\b(calculate|calculation|salary|income|ctc)\b/i,
+        "text-analyzer",
+        /\b(analyze|count|word counter|words in)\b/i,
         function (question) {
-          var numbers = question.match(/[\d,]+(?:\.\d+)?/g) || [];
-          var amount = numbers.length ? Number(numbers[0].replace(/,/g, "")) : 0;
-          if (!amount) {
-            return { answer: "Send a salary amount, for example: **Calculate 50000 salary**." };
+          var text;
+          if (/^test live word counter$/i.test(question.trim())) {
+            text = "Zero dependency AI engine";
+          } else {
+            text = question
+              .replace(/^analyze\s*:?\s*/i, "")
+              .replace(/^count\s*(?:the\s+)?(?:characters?|words?)?\s*(?:in)?\s*:?\s*/i, "")
+              .replace(/^words?\s+in\s*:?\s*/i, "")
+              .replace(/^word counter\s*:?\s*/i, "")
+              .trim();
           }
-          var deductions = Math.round(amount * 0.1);
-          var net = amount - deductions;
+          if (!text) text = "Zero dependency AI engine";
+          var words = text.match(/\S+/g) || [];
           return {
             answer:
-              "**Salary Estimate**\n" +
-              "Gross monthly: **₹" + amount.toLocaleString("en-IN") + "**\n" +
-              "Estimated deductions (10%): **₹" + deductions.toLocaleString("en-IN") + "**\n" +
-              "Estimated take-home: **₹" + net.toLocaleString("en-IN") + "**"
+              "**Text Analysis**\n" +
+              "Text: **" + text + "**\n" +
+              "Characters: **" + text.length + "**\n" +
+              "Words: **" + words.length + "**"
           };
         }
       );
@@ -539,8 +540,8 @@
       document.querySelectorAll("[data-api]").forEach(function (button) {
         button.addEventListener("click", function () {
           var action = button.getAttribute("data-api");
-          if (action === "timings") ZerionAI.ask("What are your timings?");
-          if (action === "salary") ZerionAI.ask("Calculate 50000 salary");
+          if (action === "embed") ZerionAI.ask("How do I embed Zerion AI?");
+          if (action === "analyze") ZerionAI.ask("Analyze: Zero dependency AI engine");
           if (action === "toggle") ZerionAI.toggle();
           if (action === "open") ZerionAI.open();
         });
